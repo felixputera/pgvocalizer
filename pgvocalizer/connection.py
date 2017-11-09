@@ -20,7 +20,7 @@ def get_query_plan(query):
     query_explain = "EXPLAIN (FORMAT JSON) " + query
 
     cur.execute(query_explain)
-    res = cur.fetchone()[0][0]
+    res = cur.fetchone()[0]
 
     cur.close()
 
