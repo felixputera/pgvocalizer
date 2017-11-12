@@ -1,3 +1,4 @@
 click==6.7
 psycopg2==2.7.3.2
 python-dotenv==0.7.1
+pyttsx==1.2
