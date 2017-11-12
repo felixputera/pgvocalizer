@@ -1,0 +1,1 @@
+from pgvocalizer.vocalizer import vocalize
