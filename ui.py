@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter.ttk import *
-from pgvocalizer import vocalize
+from pgvocalizer import vocalize_plan
+from pgvocalizer.connection import get_query_plan
 import pyttsx
 
 
@@ -49,15 +50,15 @@ class Window(Frame):
 
     def get_qep(self):
         query = self.entry_query.get(0.0, END)
-        qep = vocalize(query)
+        qep = get_query_plan(query)[0]
         self.text_qep_result.delete(0.0, END)
         self.text_qep_result.insert(END, qep)
 
     def get_nl(self):
-        query = self.entry_qep.get(0.0, END)
-        # process here
+        qep = self.entry_qep.get(0.0, END)
+        nl = vocalize_plan(qep)
         self.text_nl_result.delete(0.0, END)
-        self.text_nl_result.insert(END, query)
+        self.text_nl_result.insert(END, nl)
 
     def speak(self):
         sentences = self.text_nl_result.get(0.0, END)
