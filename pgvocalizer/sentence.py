@@ -73,6 +73,7 @@ def _normalize_expr(string):
     string = _clean_type(string)
     string = _stringify_pg_dt_fun(string)
     string = _stringify_misc_fun(string)
+    string = _stringify_like_op(string)
     string = _stringify_table_column(string)
     string = _clean_symbols(string)
     return string
@@ -197,5 +198,20 @@ def _stringify_misc_fun(string):
     string = _handle_substr_swap(string, swap_list)
 
     string = re.sub(r'\(\)', '', string)
+
+    return string
+
+
+def _stringify_like_op(string):
+    swap_list = []
+    for table_col in re.finditer(r'([a-zA-Z%]+)[ ]*~~[ ]*([a-zA-Z%]+)', string):
+        swap_string = "{} which contains {} substring".format(table_col.group(1), table_col.group(2))
+        swap = {
+            'swap_string': swap_string,
+            'start_idx': table_col.span(0)[0],
+            'end_idx': table_col.span(0)[1]
+        }
+        swap_list.append(swap)
+    string = _handle_substr_swap(string, swap_list)
 
     return string
