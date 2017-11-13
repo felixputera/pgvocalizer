@@ -3,10 +3,10 @@ from tkinter.ttk import *
 from pgvocalizer import vocalize
 import pyttsx
 
-class Window(Frame):
 
+class Window(Frame):
     def __init__(self, master=None):
-        Frame.__init__(self, master)               
+        Frame.__init__(self, master)
         self.master = master
         self.init_window()
 
@@ -48,26 +48,28 @@ class Window(Frame):
         self.submitButton2.grid(row=3, column=2, padx=5, pady=10)
 
     def get_qep(self):
-    	query = self.entry_query.get(0.0, END)
-    	qep = vocalize(query)
-    	self.text_qep_result.delete(0.0, END)
-    	self.text_qep_result.insert(END, qep)
+        query = self.entry_query.get(0.0, END)
+        qep = vocalize(query)
+        self.text_qep_result.delete(0.0, END)
+        self.text_qep_result.insert(END, qep)
 
     def get_nl(self):
-    	query = self.entry_qep.get(0.0, END)
-    	# process here
-    	self.text_nl_result.delete(0.0, END)
-    	self.text_nl_result.insert(END, query)
-    	
-    def speak(self):
-    	sentences = self.text_nl_result.get(0.0, END)
-    	engine = pyttsx.init()
-    	engine.say(sentences)
-    	engine.runAndWait()
+        query = self.entry_qep.get(0.0, END)
+        # process here
+        self.text_nl_result.delete(0.0, END)
+        self.text_nl_result.insert(END, query)
 
-root = Tk()
-w = root.winfo_screenwidth()
-h = root.winfo_screenheight()
-root.geometry("%dx%d"%(w,h))
-app = Window(root)
-root.mainloop()
+    def speak(self):
+        sentences = self.text_nl_result.get(0.0, END)
+        engine = pyttsx.init()
+        engine.say(sentences)
+        engine.runAndWait()
+
+
+if __name__ == "__main__":
+    root = Tk()
+    w = root.winfo_screenwidth()
+    h = root.winfo_screenheight()
+    root.geometry("%dx%d" % (w, h))
+    app = Window(root)
+    root.mainloop()
