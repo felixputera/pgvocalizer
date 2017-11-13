@@ -31,6 +31,12 @@ def vocalize(query):
     return _traverse_tree(tree_root)
 
 
+def vocalize_plan(plan):
+    tree_root = TreeNode()
+    _build_tree(plan[0]["Plan"], tree_root)
+    return _traverse_tree(tree_root)
+
+
 def get_tree(query):
     plan = get_query_plan(query)
     tree_root = TreeNode()

@@ -204,7 +204,7 @@ def _stringify_misc_fun(string):
 
 def _stringify_like_op(string):
     swap_list = []
-    for table_col in re.finditer(r'([a-zA-Z%]+)[ ]*~~[ ]*([a-zA-Z%]+)', string):
+    for table_col in re.finditer(r'([a-zA-Z%()\']+)[ ]*~~[ ]*([a-zA-Z%()\']+)', string):
         swap_string = "{} which contains {} substring".format(table_col.group(1), table_col.group(2))
         swap = {
             'swap_string': swap_string,
