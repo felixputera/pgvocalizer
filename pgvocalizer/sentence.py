@@ -94,7 +94,7 @@ def _clean_symbols(string):
 def _stringify_pg_dt_fun(string):
     # age(timestamp)
     swap_list = []
-    for func in re.finditer(r'age\(([(\']?[a-zA-Z._]+\(?\)?[)\']?)\)', string):
+    for func in re.finditer(r'age\(([(\']?[0-9a-zA-Z._]+\(?\)?[)\']?)\)', string):
         swap_string = "midnight of today subtract {}".format(func.group(1))
         swap = {
             'swap_string': swap_string,
@@ -106,7 +106,7 @@ def _stringify_pg_dt_fun(string):
 
     # age(timestamp, timestamp)
     swap_list = []
-    for func in re.finditer(r'age\(([(\']?[a-zA-Z._]+\(?\)?[)\']?)[ ]*,[ ]*([(\']?[a-zA-Z._]+\(?\)?[)\']?)\)', string):
+    for func in re.finditer(r'age\(([(\']?[0-9a-zA-Z._]+\(?\)?[)\']?)[ ]*,[ ]*([(\']?[0-9a-zA-Z._]+\(?\)?[)\']?)\)', string):
         swap_string = "{} subtract {}".format(func.group(1), func.group(2))
         swap = {
             'swap_string': swap_string,
@@ -118,7 +118,7 @@ def _stringify_pg_dt_fun(string):
 
     # date_part(text, timestamp) and date_part(text, interval)
     swap_list = []
-    for func in re.finditer(r'date_part\(([(\']?[a-zA-Z._]+\(?\)?[)\']?)[ ]*,[ ]*([(\']?[a-zA-Z._]+\(?\)?[)\']?)\)', string):
+    for func in re.finditer(r'date_part\(([(\']?[0-9a-zA-Z._]+\(?\)?[)\']?)[ ]*,[ ]*([(\']?[0-9a-zA-Z._]+\(?\)?[)\']?)\)', string):
         swap_string = "{} from {}".format(func.group(1), func.group(2))
         swap = {
             'swap_string': swap_string,
@@ -130,7 +130,7 @@ def _stringify_pg_dt_fun(string):
 
     # date_trunc(text, timestamp)
     swap_list = []
-    for func in re.finditer(r'date_trunc\(([(\']?[a-zA-Z._]+\(?\)?[)\']?)[ ]*,[ ]*([(\']?[a-zA-Z._]+\(?\)?[)\']?)\)', string):
+    for func in re.finditer(r'date_trunc\(([(\']?[0-9a-zA-Z._]+\(?\)?[)\']?)[ ]*,[ ]*([(\']?[0-9a-zA-Z._]+\(?\)?[)\']?)\)', string):
         swap_string = "truncate {} to {} precision".format(func.group(2), func.group(1))
         swap = {
             'swap_string': swap_string,
@@ -142,7 +142,7 @@ def _stringify_pg_dt_fun(string):
 
     # extract(field from timestamp) and extract(field from interval)
     swap_list = []
-    for func in re.finditer(r'extract\((([(\']?[a-zA-Z._]+\(?\)?[)\']?[ ]*)+)\)', string):
+    for func in re.finditer(r'extract\((([(\']?[0-9a-zA-Z._]+\(?\)?[)\']?[ ]*)+)\)', string):
         swap_string = "{}".format(func.group(1))
         swap = {
             'swap_string': swap_string,
@@ -154,7 +154,7 @@ def _stringify_pg_dt_fun(string):
 
     # isfinite(date), isfinite(timestamp), isfinite(interval)
     swap_list = []
-    for func in re.finditer(r'isfinite\(([(\']?[a-zA-Z._]+\(?\)?[)\']?)\)', string):
+    for func in re.finditer(r'isfinite\(([(\']?[0-9a-zA-Z._]+\(?\)?[)\']?)\)', string):
         swap_string = "{} is finite".format(func.group(1))
         swap = {
             'swap_string': swap_string,
@@ -176,7 +176,7 @@ def _handle_substr_swap(string, swap_list):
 
 def _stringify_table_column(string):
     swap_list = []
-    for table_col in re.finditer(r'([a-zA-Z_\-]+)\.([a-zA-Z_\-]+)', string):
+    for table_col in re.finditer(r'([0-9a-zA-Z_\-]+)\.([0-9a-zA-Z_\-]+)', string):
         swap_string = "{} of {}".format(table_col.group(2), table_col.group(1))
         swap = {
             'swap_string': swap_string,
@@ -191,7 +191,7 @@ def _stringify_table_column(string):
 
 def _stringify_misc_fun(string):
     swap_list = []
-    for table_col in re.finditer(r'([a-zA-Z_]+)\(([(\']?[a-zA-Z._]+\(?\)?[)\']?)\)', string):
+    for table_col in re.finditer(r'([a-zA-Z_]+)\(([(\']?[0-9a-zA-Z._]+\(?\)?[)\']?)\)', string):
         swap_string = "{} of {}".format(table_col.group(1), table_col.group(2))
         swap = {
             'swap_string': swap_string,
@@ -208,7 +208,7 @@ def _stringify_misc_fun(string):
 
 def _stringify_like_op(string):
     swap_list = []
-    for table_col in re.finditer(r'([a-zA-Z%()._\']+)[ ]*~~[ ]*([a-zA-Z%()._\']+)', string):
+    for table_col in re.finditer(r'([0-9a-zA-Z%()._\']+)[ ]*~~[ ]*(.+)', string):
         swap_string = "{} which contains {} substring".format(table_col.group(1), table_col.group(2))
         swap = {
             'swap_string': swap_string,
