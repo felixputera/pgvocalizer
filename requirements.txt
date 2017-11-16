@@ -1,4 +1,5 @@
 click==6.7
 psycopg2==2.7.3.2
+pypiwin32==220
 python-dotenv==0.7.1
 -e git://github.com/jpercent/pyttsx.git@f035083338f39f7d93b0c610fbef0bb55fc9fc1c#egg=pyttsx
