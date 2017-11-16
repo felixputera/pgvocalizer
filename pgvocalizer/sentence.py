@@ -6,6 +6,10 @@ def generate_sentence(tree_node):
     node_data = json.loads(tree_node.data)
 
     action_type = node_data["Node Type"]
+    if action_type == "SetOp" and "Command" in node_data:
+        action_type += "with command {}".format(node_data["Command"])
+    elif action_type == "Unique":
+        action_type = "selection of Unique tuples"
 
     # relation
     relations = []
@@ -42,10 +46,10 @@ def generate_sentence(tree_node):
     if "Filter" in node_data:
         filter_string = " and filter keeping only those with {}".format(_normalize_expr(node_data["Filter"]))
 
-    # Cond, i.e. Hash Cond
+    # Cond & Filter, i.e. Hash Cond, Join Filter
     cond_string = ""
-    for key, value in node_data.items():  # checking all occurrences of ...key, don't think can use typical in
-        if "Cond" in key:
+    for key, value in node_data.items():  # checking all occurrences of ...Cond and Filter
+        if "Cond" in key or ("Filter" in key and not(key == "Filter")):
             cond_string = " where {}".format(_normalize_expr(value))
 
     # Subplan Name
