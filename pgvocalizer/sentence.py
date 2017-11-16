@@ -77,8 +77,9 @@ def _normalize_expr(string):
     string = _clean_type(string)
     string = _stringify_pg_dt_fun(string)
     string = _stringify_misc_fun(string)
-    string = _stringify_like_op(string)
+    string = _stringify_pattern_match(string)
     string = _stringify_table_column(string)
+    string = _stringify_comp_op(string)
     string = _clean_symbols(string)
     return string
 
@@ -88,7 +89,7 @@ def _clean_type(string):
 
 
 def _clean_symbols(string):
-    return re.sub(r'[\'"(){}:;!@#$%^&*~`]', '', string)
+    return re.sub(r'[\'"()]', '', string)
 
 
 def _stringify_pg_dt_fun(string):
@@ -191,12 +192,12 @@ def _stringify_table_column(string):
 
 def _stringify_misc_fun(string):
     swap_list = []
-    for table_col in re.finditer(r'([a-zA-Z_]+)\(([(\']?[0-9a-zA-Z._]+\(?\)?[)\']?)\)', string):
-        swap_string = "{} of {}".format(table_col.group(1), table_col.group(2))
+    for misc_fun in re.finditer(r'([a-zA-Z_]+)\((.+)\)', string):
+        swap_string = "{} of {}".format(misc_fun.group(1), misc_fun.group(2))
         swap = {
             'swap_string': swap_string,
-            'start_idx': table_col.span(0)[0],
-            'end_idx': table_col.span(0)[1]
+            'start_idx': misc_fun.span(0)[0],
+            'end_idx': misc_fun.span(0)[1]
         }
         swap_list.append(swap)
     string = _handle_substr_swap(string, swap_list)
@@ -206,16 +207,63 @@ def _stringify_misc_fun(string):
     return string
 
 
-def _stringify_like_op(string):
+def _stringify_pattern_match(string):
     swap_list = []
-    for table_col in re.finditer(r'([0-9a-zA-Z%()._\']+)[ ]*~~[ ]*(.+)', string):
-        swap_string = "{} which contains {} substring".format(table_col.group(1), table_col.group(2))
+    # match a ~~ 'b' or a ~~* 'b'
+    for pattern_match in re.finditer(r'([0-9a-zA-Z()._\']+)[ ]*~~\*?[ ]*\'(.+)\'', string):
+        pattern = re.sub(r'[%_]', '', pattern_match.group(2))
+        swap_string = "{} which contains {} substring".format(pattern_match.group(1), pattern)
         swap = {
             'swap_string': swap_string,
-            'start_idx': table_col.span(0)[0],
-            'end_idx': table_col.span(0)[1]
+            'start_idx': pattern_match.span(0)[0],
+            'end_idx': pattern_match.span(0)[1]
         }
         swap_list.append(swap)
     string = _handle_substr_swap(string, swap_list)
+
+    # match a !~~ 'b' or a !~~* 'b'
+    for pattern_match in re.finditer(r'([0-9a-zA-Z()._\']+)[ ]*!~~\*?[ ]*\'(.+)\'', string):
+        pattern = re.sub(r'[%_]', '', pattern_match.group(2))
+        swap_string = "{} which does not contain {} substring".format(pattern_match.group(1), pattern)
+        swap = {
+            'swap_string': swap_string,
+            'start_idx': pattern_match.span(0)[0],
+            'end_idx': pattern_match.span(0)[1]
+        }
+        swap_list.append(swap)
+    string = _handle_substr_swap(string, swap_list)
+
+    # match a ~ 'b' or a ~* 'b'
+    for pattern_match in re.finditer(r'([0-9a-zA-Z()._\']+)[ ]*~\*?[ ]*\'(.+)\'', string):
+        swap_string = "{} which contains regex {}".format(pattern_match.group(1), pattern_match.group(2))
+        swap = {
+            'swap_string': swap_string,
+            'start_idx': pattern_match.span(0)[0],
+            'end_idx': pattern_match.span(0)[1]
+        }
+        swap_list.append(swap)
+    string = _handle_substr_swap(string, swap_list)
+
+    # match a !~ 'b' or a !~* 'b'
+    for pattern_match in re.finditer(r'([0-9a-zA-Z()._\']+)[ ]*!~\*?[ ]*\'(.+)\'', string):
+        swap_string = "{} which does not contain regex {}".format(pattern_match.group(1), pattern_match.group(2))
+        swap = {
+            'swap_string': swap_string,
+            'start_idx': pattern_match.span(0)[0],
+            'end_idx': pattern_match.span(0)[1]
+        }
+        swap_list.append(swap)
+    string = _handle_substr_swap(string, swap_list)
+
+    return string
+
+
+def _stringify_comp_op(string):
+    string = re.sub(r'(<>)|(!=)', 'not equal', string)
+    string = re.sub(r'<=', 'less than or equal to', string)
+    string = re.sub(r'>=', 'greater than or equal to', string)
+    string = re.sub(r'<', 'less than', string)
+    string = re.sub(r'>', 'greater than', string)
+    string = re.sub(r'=', 'equal to', string)
 
     return string

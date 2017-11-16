@@ -72,6 +72,12 @@ class Window(Frame):
         engine.say(sentences)
         engine.runAndWait()
 
+    def callback(self, event):
+        # select text
+        event.widget.select_range(0, 'end')
+        # move cursor to the end
+        event.widget.icursor('end')
+
 
 if __name__ == "__main__":
     root = Tk()
