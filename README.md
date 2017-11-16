@@ -17,7 +17,7 @@ $ python ui.py
 ![Screenshot](./screenshot.png)
 - **Input Query**: You can input your query here to generate the QEP in JSON format
 - **Query Execution Plan Result**: The QEP in JSON format from query above will be displayed here
-- **Input Query Execution Plan**: Input the QEP in JSON format here, you can copy paste from the **Query Execution Plan Result** or query Postgres using:
+- **Input Query Execution Plan**: Input the QEP in JSON format here, you can copy paste from the **Query Execution Plan Result** *OR* get it from querying Postgres using:
 ```sql
 EXPLAIN (FORMAT JSON) [your_query_here]
 ```
