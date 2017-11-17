@@ -25,14 +25,14 @@ def _traverse_tree(tree_node):
 
 def vocalize(query):
     plan_json = get_query_plan(query)
-    plan = json.loads(plan_json)[0]
+    plan = json.loads(plan_json)
     tree_root = TreeNode()
     _build_tree(plan[0]["Plan"], tree_root)
     return _traverse_tree(tree_root)
 
 
 def vocalize_plan(plan_json):
-    plan = json.loads(plan_json)[0]
+    plan = json.loads(plan_json)
     tree_root = TreeNode()
     _build_tree(plan[0]["Plan"], tree_root)
     return _traverse_tree(tree_root)

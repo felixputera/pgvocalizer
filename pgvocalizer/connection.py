@@ -21,7 +21,7 @@ def get_query_plan(query):
     query_explain = "EXPLAIN (FORMAT JSON) " + query
 
     cur.execute(query_explain)
-    res = cur.fetchone()
+    res = cur.fetchone()[0]
     json_out = json.dumps(res, indent=1)
 
     cur.close()
