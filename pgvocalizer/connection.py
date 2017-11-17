@@ -1,3 +1,4 @@
+import json
 import os
 
 from dotenv import load_dotenv
@@ -20,8 +21,9 @@ def get_query_plan(query):
     query_explain = "EXPLAIN (FORMAT JSON) " + query
 
     cur.execute(query_explain)
-    res = cur.fetchone()[0]
+    res = cur.fetchone()
+    json_out = json.dumps(res, indent=1)
 
     cur.close()
 
-    return res
+    return json_out

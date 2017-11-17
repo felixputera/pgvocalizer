@@ -1,5 +1,4 @@
 import json
-import ast
 from pgvocalizer.connection import get_query_plan
 from pgvocalizer.sentence import generate_sentence
 from pgvocalizer.tree import TreeNode
@@ -25,16 +24,17 @@ def _traverse_tree(tree_node):
 
 
 def vocalize(query):
-    plan = get_query_plan(query)
+    plan_json = get_query_plan(query)
+    plan = json.loads(plan_json)[0]
     tree_root = TreeNode()
     _build_tree(plan[0]["Plan"], tree_root)
     return _traverse_tree(tree_root)
 
 
-def vocalize_plan(plan):
-    plan_dict = ast.literal_eval(plan)
+def vocalize_plan(plan_json):
+    plan = json.loads(plan_json)[0]
     tree_root = TreeNode()
-    _build_tree(plan_dict["Plan"], tree_root)
+    _build_tree(plan[0]["Plan"], tree_root)
     return _traverse_tree(tree_root)
 
 

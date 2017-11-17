@@ -56,7 +56,7 @@ class Window(Frame):
 
     def get_qep(self):
         query = self.entry_query.get(0.0, END)
-        qep = get_query_plan(query)[0]
+        qep = get_query_plan(query)
         self.text_qep_result.delete(0.0, END)
         self.text_qep_result.insert(END, qep)
 
